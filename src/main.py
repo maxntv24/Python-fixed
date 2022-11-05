@@ -89,7 +89,8 @@ def uploadHandler():
 				makedirs(unzip_path)
 				print(uploaded_file)
 				system("unzip {0} -d {1}".format(uploaded_file, unzip_path))
-				unzip_path = unzip_path.replace('/app', '')				
+				unzip_path = unzip_path.replace('/app', '')	
+				#### fix symlink			
 				symlink=remove_symlink("/app"+unzip_path)
 				if symlink == 0:
 					return "File is unzip-ed to <a href='" + unzip_path + "'>" + unzip_path + "</a>"

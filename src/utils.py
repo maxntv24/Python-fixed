@@ -24,6 +24,7 @@ def check_filename(filename):
 
 def check_script_dup(scripts, command_log, json):
 	try:
+		### fix rce
 		script_parent_dir = scripts + '/' + json['dir']
 		if not check_filename(json['dir']):
 				return "Oh no no no"
