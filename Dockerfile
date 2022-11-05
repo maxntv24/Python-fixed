@@ -13,7 +13,7 @@ RUN apt install netcat -y
 RUN apt install ncat -y
 RUN pip3 install --upgrade --no-cache-dir -r requirements.txt
 RUN apt install unzip -y
-
+RUN apt install -y symlinks
 
 RUN chown -R root:ctf /app && \
     chmod 750 /app /app/main.py
@@ -21,5 +21,3 @@ RUN chown -R root:ctf /app && \
 USER ctf
 
 CMD ["/usr/local/bin/python", "/app/main.py"]
-
-EXPOSE 1337

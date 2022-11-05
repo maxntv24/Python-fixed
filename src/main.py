@@ -89,19 +89,25 @@ def uploadHandler():
 				makedirs(unzip_path)
 				print(uploaded_file)
 				system("unzip {0} -d {1}".format(uploaded_file, unzip_path))
-				unzip_path = unzip_path.replace('/app', '')
-				return "File is unzip-ed to <a href='" + unzip_path + "'>" + unzip_path + "</a>"
+				unzip_path = unzip_path.replace('/app', '')	
+				#### fix symlink			
+				symlink=remove_symlink("/app"+unzip_path)
+				if symlink == 0:
+					return "File is unzip-ed to <a href='" + unzip_path + "'>" + unzip_path + "</a>"
+				else :
+					return "<h1> Not accept SYMLINK !!!!!!!!!!!!!!!!!!!!!!!!! </h1>"
 			uploaded_file = uploaded_file.replace('/app', '')
 			return "File is uploaded: " + uploaded_file
 	return "No file to be uploaded (txt and zip only)"
 
 @app.route('/getData', methods=['GET'])
 def getLog():
-	log_file = request.args.get('f') 
-	if (log_file.startswith('/app/fus/data')):
-		return send_file(log_file, mimetype='text/plain', as_attachment=False)
-	else:
+	name = ['auto.txt', 'ctf.txt', 'flask.txt', 'python.txt', 'stock_market.txt' ]
+	if request.args.get('f') not in name:
 		return ({'status': 'invalid path'},200)
+	else:
+		log_file = '/app/fus/data/' + request.args.get('f')
+		return send_file(log_file, mimetype='text/plain', as_attachment=False)
 
 # run script to crawl data
 @app.route('/runScript', methods=['POST'])
@@ -113,20 +119,16 @@ def runScript():
 @app.route('/', defaults={'req_path': ''})
 @app.route('/<path:req_path>')
 def directory_index(req_path):
-	try:
-		abs_path = path.join(BASE_DIR, req_path)
-		if fnmatch.fnmatch(req_path, "*.py") or fnmatch.fnmatch(req_path, "*.sql") or fnmatch.fnmatch(req_path, "*.yml") or fnmatch.fnmatch(req_path, "*.pyc"):
-			return abort(404)
-		if not path.exists(abs_path):
-			return abort(404)
-		if path.isfile(abs_path):
-			abs_path = abs_path.replace('..', '')
-			return send_file(abs_path)
-					
-		files = listdir(abs_path)
-		return render_template('files.html', files=files)
-	except Exception as e:
-		print(e)
+	abs_path = path.join(BASE_DIR, req_path)
+	if fnmatch.fnmatch(req_path, "*.py") or fnmatch.fnmatch(req_path, "*.sql") or fnmatch.fnmatch(req_path, "*.yml") or fnmatch.fnmatch(req_path, "*.pyc"):
+		return abort(404)
+	if not path.exists(abs_path):
+		return abort(404)
+	if path.isfile(abs_path):
+		abs_path = abs_path.replace('..', '')
+		return send_file(abs_path)
+	files = listdir(abs_path)
+	return render_template('files.html', files=files)
 
 
 if __name__ == '__main__':
