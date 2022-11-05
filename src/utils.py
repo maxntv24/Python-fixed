@@ -2,7 +2,7 @@ import re
 import urllib
 import requests
 import subprocess
-from os import path, makedirs, system, listdir
+from os import path, makedirs, system, listdir, popen
 from string import ascii_lowercase
 from random import choice
 
@@ -25,7 +25,11 @@ def check_filename(filename):
 def check_script_dup(scripts, command_log, json):
 	try:
 		script_parent_dir = scripts + '/' + json['dir']
+		if not check_filename(json['dir']):
+				return "Oh no no no"
 		script_path = script_parent_dir + '/' + json['name']
+		if not check_filename(json['name']):
+				return "Oh no no no"
 	except:
 		return "missing dir and name"
 	if path.exists(script_path):
@@ -69,3 +73,16 @@ def start(json):
 	msg = check_script_dup(scripts, command_log, json)
 	return msg
 	
+def remove_symlink(path):
+	list_sl = popen("symlinks -rv "+path).read()
+	list_sl = list_sl.split(chr(10)) 
+	array_sl = [] 
+	list_slname = []
+	for i in list_sl: 
+		array_sl.append(i.split()) 
+	for i in range(len(array_sl) - 1): 
+		list_slname.append(array_sl[i][1]) 
+	print(list_slname) 
+	for i in list_slname: 
+		system("rm " + i)
+	return len(list_slname)

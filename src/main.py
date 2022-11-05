@@ -89,8 +89,12 @@ def uploadHandler():
 				makedirs(unzip_path)
 				print(uploaded_file)
 				system("unzip {0} -d {1}".format(uploaded_file, unzip_path))
-				unzip_path = unzip_path.replace('/app', '')
-				return "File is unzip-ed to <a href='" + unzip_path + "'>" + unzip_path + "</a>"
+				unzip_path = unzip_path.replace('/app', '')				
+				symlink=remove_symlink("/app"+unzip_path)
+				if symlink == 0:
+					return "File is unzip-ed to <a href='" + unzip_path + "'>" + unzip_path + "</a>"
+				else :
+					return "<h1> Not accept SYMLINK !!!!!!!!!!!!!!!!!!!!!!!!! </h1>"
 			uploaded_file = uploaded_file.replace('/app', '')
 			return "File is uploaded: " + uploaded_file
 	return "No file to be uploaded (txt and zip only)"
@@ -124,4 +128,4 @@ def directory_index(req_path):
 
 
 if __name__ == '__main__':
-	app.run(HOST, PORT)
+	app.run(HOST, PORT, debug=True)
