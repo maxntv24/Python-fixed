@@ -97,11 +97,12 @@ def uploadHandler():
 
 @app.route('/getData', methods=['GET'])
 def getLog():
-	log_file = request.args.get('f') 
-	if (log_file.startswith('/app/fus/data')):
-		return send_file(log_file, mimetype='text/plain', as_attachment=False)
-	else:
+	name = ['auto.txt', 'ctf.txt', 'flask.txt', 'python.txt', 'stock_market.txt' ]
+	if request.args.get('f') not in name:
 		return ({'status': 'invalid path'},200)
+	else:
+		log_file = '/app/fus/data/' + request.args.get('f')
+		return send_file(log_file, mimetype='text/plain', as_attachment=False)
 
 # run script to crawl data
 @app.route('/runScript', methods=['POST'])
