@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"><!--<![endif]-->
+<head>
+	<script>
+		window.onload = function() {
+		
+		var dataPoints = [];
+		
+		var chart = new CanvasJS.Chart("chartContainer", {
+			theme: "light2",
+			title: {
+				text: "Chứng khoán Cyberjutsu"
+			},
+			data: [{
+				type: "line",
+				dataPoints: dataPoints
+			}]
+		});
+		updateData();
+		
+		// Initial Values
+		var xValue = 0;
+		var yValue = 10;
+		var newDataCount = 6;
+		
+		function addData(data) {
+			if(newDataCount != 1) {
+				$.each(data, function(key, value) {
+					dataPoints.push({x: value[0], y: parseInt(value[1])});
+					xValue++;
+					yValue = parseInt(value[1]);
+				});
+			} else {
+				//dataPoints.shift();
+				dataPoints.push({x: data[0][0], y: parseInt(data[0][1])});
+				xValue++;
+				yValue = parseInt(data[0][1]);
+			}
+			
+			newDataCount = 1;
+			chart.render();
+			setTimeout(updateData, 500);
+		}
+		
+		function updateData() {
+			$.getJSON("https://canvasjs.com/services/data/datapoints.php?xstart="+xValue+"&ystart="+yValue+"&length="+newDataCount+"type=json&callback=?", addData);
+		}
+		
+		}
+		</script>
+	<!-- Basic Page Needs -->
+	<meta charset="UTF-8">
+	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+	<title>Cyberjutsu Stock</title>
+
+	<meta name="author" content="themsflat.com">
+
+	<!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Boostrap style -->
+	<link rel="stylesheet" type="text/css" href="templates/stylesheet/bootstrap.min.css">
+
+	<!-- REVOLUTION LAYERS STYLES -->
+    <link rel="stylesheet" type="text/css" href="templates/revolution/css/layers.css">
+    <link rel="stylesheet" type="text/css" href="templates/revolution/css/settings.css">
+
+	<!-- Theme style -->
+	<link rel="stylesheet" type="text/css" href="templates/stylesheet/style.css">
+
+	<!-- Colors -->
+    <link rel="stylesheet" type="text/css" href="templates/stylesheet/colors/color1.css" id="colors">
+
+	<!-- Reponsive -->
+	<link rel="stylesheet" type="text/css" href="templates/stylesheet/responsive.css">
+
+	<!-- Favicon and touch icons  -->
+    <link href="templates/icon/apple-touch-icon-48-precomposed.png" rel="apple-touch-icon-precomposed">
+    <link href="templates/icon/apple-touch-icon-32-precomposed.png" rel="apple-touch-icon-precomposed">
+    <link href="templates/icon/favicon.png" rel="shortcut icon">
+
+</head>
+	<body>
+		<div class="boxed">
+		<!-- Preloader -->
+	    <div id="loading-overlay">
+	        <div class="loader"></div>
+	    </div>
+
+		<div class="themesflat-top">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="flat-infomation">
+							<li class="email"><a href="mailto:themesflat@gmail.com" title="email">Email: info@cyberjutsu.io</a></li>
+							<li class="phone"><a href="+61383766284" title="phone">Call Us: +(84) 983 2777 84</a></li>
+						</ul><!-- /.flat-infomation -->
+						<ul class="box-account">
+							{% if current_user.is_authenticated %}
+							<li class="login">
+								<a href="{{ url_for('indexHandler') }}" title="">{{current_user.id|safe}}</a>
+							</li>
+							{% endif %}
+							{% if not current_user.is_authenticated %}
+							<li class="login">
+								<a href="{{ url_for('auth.signin') }}" title="">Sign in</a>
+							</li>
+							<li class="sign-in">
+								<a href="{{ url_for('auth.signup') }}" title="">Sign up</a>
+							</li>
+							{% endif %}
+							{% if current_user.is_authenticated %}
+							<li class="sign-in">
+								<a href="{{ url_for('auth.logout') }}" title="">Log out</a>
+							</li>
+							{% endif %}
+							
+						</ul><!-- /.box-account -->
+						<div class="clearfix"></div><!-- /.clearfix -->
+					</div><!-- /.col-md-12 -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.themesflat-top -->
+
+		<header id="header" class="header bg-color">
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						{% if category == 'message' %}
+							<div class="alert alert-danger" role="alert">
+						{% else %}
+							<div class="alert alert-{{ category }}" role="alert">
+						{% endif %}
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			<div class="container">
+				<div class="row">
+					<div class="header-wrap">
+						<div id="logo" class="logo">
+							<a href="/" title="">
+								Cyberjutsu Stock
+							</a>
+						</div><!-- /#logo -->
+						<div class="flat-show-search">
+							<div class="show-search">
+                                <i class="fa fa-search"></i>                                             
+                            </div>
+                            <div class="top-search">                        
+                                <form action="#" id="searchform-all" method="get">
+                                    <div>
+                                        <input type="text" id="s" class="sss" placeholder="Search...">
+                                        <input type="submit" value="" id="searchsubmit">
+                                    </div>
+                                </form>
+                            </div> <!-- /.top-search -->
+                        </div>	<!-- /.flat-show-search -->
+						
+						<div class="nav-wrap">
+							<div class="btn-menu">
+                                <span></span>
+                            </div><!-- //mobile menu button -->
+							<nav id="mainnav" class="mainnav">
+								<ul class="menu">
+									<li class="active">
+                                        <a href="/" title="">HOME</a>                                        
+                                    </li>
+                                    <li>
+                                        <a href="/about" title="">ABOUT</a>
+                                    </li>
+                                    <li>
+										<a href="/services" title="">SERVICE</a>
+									</li>
+                                    <li>
+										<a href="#" title="">PAGES</a>                    
+									</li>
+                                    <li>
+										<a href="#" title="">BLOG</a>										
+									</li>
+                                    <li>
+                                        <a href="#" title="">CONTACT</a>
+                                    </li>
+								</ul><!-- /.menu -->
+							</nav><!-- /#mainnav -->
+						</div><!-- /.nav-wrap -->
+					</div><!-- /.header-wrap -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</header><!-- /#header -->
+		<br/>
+		<div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+		<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+		<script src="templates/javascript/canvasjs.min.js"></script>
+
+		<section class="flat-recent-market">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="wrap-recent-text">
+							<h2 class="title">ABOUT US</h2>
+							<div class="content-text">
+								<p>Stock market so mot quan 4.</p>
+								<p>Xin chào.🙌
+
+									Ồ!😲 mình biết bạn đấy🤝 1️⃣ năm trước mình cũng như bạn🧒bây giờ 👦cũng hằng ngày 🌞🌝đi làm👨‍🔧 cày 1️⃣0️⃣ tiếng đồng hồ🕙mà chỉ nhận được lương 💵 ít ỏi 💵Dù cố thế nào 🥵cũng không có tiền 😢Thật không❌công bằng⚖️ đúng không ⁉️💢chứ còn gì nữa🤬 mình đã liên tục tìm🔍 việc làm thêm📑
+									
+									và 🦖 có một ngày 🌅 mình biết quảng cáo 🎭giống như bạn đang xem🖥🎥 lúc này. Lúc đầu mình cũng nghĩ🤔 chắc lại một trò lừa đảo😏 nhưng sau đó 👉mình tự nhủ 🙄thôi được rồi 😀đằng nào cũng chẳng còn gì 💸 để mất 💸thử xem sao ⭐️và🎇đó🌠trở thành🎆quyết định SÁNG SUỐT 🧠nhất trong cuộc đời🏆của mình sau 1 tháng mình mua được 📱 Iphone X, sau 3 tháng mình mua được Oto 🚗 sau nửa năm 🌎mình kiếm được gần💵💵💵 1000💲 1️⃣ ngày🅱️ằng cách nào ư ❓❓❓❓mình giao dịch 📝với cặp tiền tệ 💵 và các cổ phiếu 📊trên Binomo đó! hóa ra😆để được như này🎁không nhất thiết 🎩 phải là nhà giao dịch chuyên nghiệp 👩‍💼👨‍💼 chỉ cần động não🧠 suy nghĩ🤔 là đủ bạn chỉ cần🤝vào trang web💻 và đưa ra dự đoán 😎giá tài sản 📊sẽ lên 📈hay xuống📉nếu dự đoán đúng 👏bạn sẽ nhận tới 9️⃣0️⃣% lợi nhuận 😲ví dụ như bây giờ 👇mình đặt 1️⃣0️⃣💲 vào cặp EUR💵USD công tác sau 1 phút⏳hãy cùng tính➕➖ thời gian⏱nào và chỉ trong vòng 60⌛️ giây 🕰mình 😄đã có thêm 19💲thậm chí🤵không cần phải rời khỏi🏃‍♂️ ghế🚽Vâng! 🙂nghe có vẻ khó tin🤭nhưng đó là sự thật 🤝bạn 👋hãy tự kiểm nghiệm💻 mà xem 👀mà lại, bạn không ❌mất cái gì cả 🤚vì cái này miễn phí 💰nói chung🧐nhấn nút👇đăng ký✍️và nhận 1️⃣0️⃣0️⃣0️⃣💲 vào tài khoản demo🐁chúc bạn👋 may mắn🍀las porttitor elit posuere eu. Pellentesque aliquam, neque at maximus rhoncus, ante tortor.</p>
+								<a href="#" class="read-more" title="">GET STARTED</a>
+							</div>
+						</div><!-- /.wrap-recent-text -->
+					</div><!-- /.col-md-6 -->
+					<div class="col-md-6">
+						<div class="single-image center">
+							<img src="templates/images/page/Five-Cybersecurity-Memes-1.png" alt="">
+						</div>
+					</div><!-- /.col-md-6 -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</section><!-- /.flat-recent-market -->
+
+		
+		<section class="flat-our-work">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="top-title center">
+							<h2>HOW IT WORKS</h2>
+							<p>Bitcoin is received, stored, and sent using software known as a 'Bitcoin Wallet'</p>
+						</div>
+					</div>
+				</div><!-- /.row -->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="wrap-iconbox">
+							<div class="iconbox inline-left style4">
+								<div class="icon">
+									<img src="templates/images/icon/account-1.png" alt="">
+								</div>
+								<div class="number">
+									1
+								</div>
+								<div class="iconbox-content">
+									<h4><a href="#" title="">CREAT ACCOUNT</a></h4>
+									<p>In Aenean lacus purus, pretium sit amet sapien. Nam elementum faucibus, morbi tempor, justo et dapibus volutpat.aliquam.</p>
+								</div>
+							</div><!-- /.iconbox style4 -->
+							<div class="iconbox inline-left style4">
+								<div class="icon">
+									<img src="templates/images/icon/payment-1.png" alt="">
+								</div>
+								<div class="number">
+									2
+								</div>
+								<div class="iconbox-content">
+									<h4><a href="#" title="">MAKE PAYMENT</a></h4>
+									<p>In Aenean lacus purus, pretium sit amet sapien. Nam elementum faucibus, morbi tempor, justo et dapibus volutpat.aliquam erat volutpat.</p>
+								</div>
+							</div><!-- /.iconbox style4 -->
+							<div class="iconbox inline-left style4">
+								<div class="icon">
+									<img src="templates/images/icon/orders-1.png" alt="">
+								</div>
+								<div class="number">
+									3
+								</div>
+								<div class="iconbox-content">
+									<h4><a href="#" title="">BUY OR SELL ORDERS</a></h4>
+									<p>In Aenean lacus purus, pretium sit amet sapien. Nam elementum faucibus, morbi tempor, justo et dapibus volutpat.aliquam erat volutpat.</p>
+								</div>
+							</div><!-- /.iconbox style4 -->
+						</div><!-- /.wrap-iconbox -->
+					</div><!-- /.col-md-6 -->
+					<div class="col-md-6">
+						<div class="single-image">
+							<img src="templates/images/page/cyber_risks.png" alt="">
+						</div>
+					</div><!-- /.col-md-6 -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</section><!-- /.flat-our-work -->
+
+		<section class="flat-price-coin bg-browse">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="top-title center">
+							<h2>CRYPTOCURRENCY PRICES</h2>
+							<p>The Bitcoin ecosystem at a glance. Any of our service with free test credits or actual Bitcoins.</p>
+						</div>
+						<div class="table-price">
+							<table>
+								<thead>
+									<tr>
+										<th>Symbol</th>
+										<th>Name</th>
+										<th>USD</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for item in data %}
+									<tr>
+										<td>{{item[1]}}</td>
+										<td>{{item[2]}}</td>
+										<td>{{item[3]}}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div><!-- /.table-price -->
+					</div><!-- /.col-md-12 -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</section><!-- /.flat-price-coin -->
+
+		
+
+		<section class="flat-counter">
+			<div class="container">
+				<div class="wrap-counter">
+					<div class="row">
+						<div class="col-md-3 col-6">
+							<div class="square center">
+								<div class="counter-box">
+									<div class="numb-count" data-from="0" data-to="50" data-speed="2000" data-waypoint-active="yes">50</div>
+									<div class="text color-default">
+										PROJECTS
+									</div>
+								</div>
+							</div><!-- /.square -->
+						</div><!-- /.col-md-3 col-6 -->
+						<div class="col-md-3 col-6">
+							<div class="square center">
+								<div class="counter-box">
+									<div class="numb-count" data-from="0" data-to="70" data-speed="2000" data-waypoint-active="yes">70</div>
+									<div class="text">
+										CLIENTS
+									</div>
+								</div>
+							</div><!-- /.square -->
+						</div><!-- /.col-md-3 col-6 -->
+						<div class="col-md-3 col-6">
+							<div class="square center">
+								<div class="counter-box">
+									<div class="numb-count" data-from="0" data-to="120" data-speed="2000" data-waypoint-active="yes">120</div>
+									<div class="text">
+										ACCOUNTS
+									</div>
+								</div>
+							</div><!-- /.square -->
+						</div><!-- /.col-md-3 col-6 -->
+						<div class="col-md-3 col-6">
+							<div class="square center">
+								<div class="counter-box">
+									<div class="numb-count" data-from="0" data-to="220" data-speed="2000" data-waypoint-active="yes">220</div>
+									<div class="text">
+										TRANSACTIONS
+									</div>
+								</div>
+							</div><!-- /.square -->
+						</div><!-- /.col-md-3 col-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.counter -->
+			</div><!-- /.container -->
+		</section><!-- /.flat-counter -->
+
+		
+
+		<footer id="footer_background">
+			<div class="footer">
+				<div class="container">
+					<div class="row">
+						<div class="footer-widgets">
+							<div class="col-md-4">
+								<div class="widget widget-about">
+									<div class="widget-text">
+										<div id="logo-ft">
+											<a href="#" title="Cyberjutsu Stock"></a>
+												
+											</a>
+										</div>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In a rhoncus risus atione Pellentesque sodales risus aut
+										</p>
+									</div>
+									<div class="widget widget-newletter">
+										<h3 class="widget-title">NEWSLETTER</h3>
+										<form id="subscribe-form" action="#" method="post" accept-charset="utf-8" data-mailchimp="true">
+			                                <div id="subscribe-content">
+												<div class="input-email">
+													<input type="email" name="email-form" id="subscribe-email" placeholder="Email address" />
+												</div>
+												<button type="button" id="subscribe-button" class="button-subscribe"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+			                                </div>
+			                                <div id="subscribe-msg"></div>
+										</form>
+									</div>
+								</div><!-- /.widget-about -->
+							</div><!-- /.col-md-4 -->
+							<div class="col-md-4">
+								<div class="widget widget_nav_menu">
+									<h3 class="widget-title">QUICK LINK</h3>
+									<ul class="menu-footer one-half">
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Forum</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> News</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Advertise</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Jobs</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Wallets</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Guide</a></li>
+									</ul><!-- /.one-half -->
+									<ul class="menu-footer one-half">
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> FAQ</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Chart</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Term</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Legal</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Pivacy</a></li>
+										<li><a href="#" title=""><i class="fa fa-angle-double-right"></i> Partners</a></li>
+									</ul><!-- /.one-half -->
+									<div class="clearfix"></div>
+								</div><!-- /.widget_nav_menu -->
+							</div><!-- /.col-md-4 -->
+							<div class="col-md-4">
+								<div class="widget widget_contact">
+									<h3 class="widget-title">CONTACT</h3>
+									<ul class="contact-list">
+										<li>
+											Address: <span>9291 Proin Road, Lake Charles Maine 11292</span>
+										</li>
+										<li>
+											Phone: <span>+(84) 983 2777 84</span>
+										</li>
+										<li>
+											Email: <span>info.deercreative@gmail.com</span>
+										</li>
+									</ul>
+									<div class="widget widget_themesflat_socials">            
+										<ul class="themesflat-shortcode-socials">
+									        <li class="facebook">
+						                        <a href="#" target="_blank" rel="alternate" title="">
+						                            <i class="fa fa-facebook"></i>                            
+						                        </a>
+						                    </li>
+						                    <li class="twitter">
+						                        <a href="#" target="_blank" rel="alternate" title="">
+						                            <i class="fa fa-twitter"></i>                            
+						                        </a>
+						                    </li>
+						                    <li class="google-plus">
+						                        <a href="#" target="_blank" rel="alternate" title="t;">
+						                            <i class="fa fa-google-plus"></i>                            
+						                        </a>
+						                    </li>
+						                    <li class="instagram">
+						                        <a href="#" target="_blank" rel="alternate" title="">
+						                            <i class="fa fa-instagram"></i>                            
+						                        </a>
+						                    </li>
+						                    <li class="linkedin">
+						                        <a href="#" target="_blank" rel="alternate" title="">
+						                            <i class="fa fa-linkedin"></i>                            
+						                        </a>
+						                    </li>
+						                </ul><!-- /.social -->       
+								    </div>
+								</div><!-- /.widget_contact -->
+							</div><!-- /.col-md-4 -->
+						</div><!-- /.footer-widgets -->
+					</div><!-- /.row -->
+				</div><!-- /.container -->
+			</div><!-- /.footer -->
+			<div class="footer-bottom">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="menu-ft-bottom">
+								<li>
+									<a href="/" title="">Home</a>
+								</li>
+								<li>
+									<a href="/about" title="">About</a>
+								</li>
+								<li>
+									<a href="#" title="">Service</a>
+								</li>
+								<li>
+									<a href="#" title="">Page</a>
+								</li>
+								<li>
+									<a href="#" title="">Blog</a>
+								</li>
+								<li>
+									<a href="#" title="">Contact</a>
+								</li>
+							</ul>
+							<div class="copyright">
+								<p>© Copyright <a href="#" title="">Coinjet</a> Cryptocurrency Theme by <a href="https://themeforest.net/user/themesflat/portfolio" title="">Themesflat</a> 2018</p>
+							</div>
+						</div>
+					</div>
+				</div><!-- /.container -->
+			</div><!-- /.footer-bottom -->	
+		</footer><!-- /#footer_background -->
+		
+		<div class="button-go-top">
+			<a href="#" title="" class="go-top">
+				<i class="fa fa-chevron-up"></i>
+			</a>
+		</div><!-- /.button-go-top -->
+	
+	</div> <!-- /.boxed -->
+
+	<!-- Javascript -->
+    <script type="text/javascript" src="templates/javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="templates/javascript/tether.min.js"></script>
+    <script type="text/javascript" src="templates/javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="templates/javascript/jquery.flexslider-min.js"></script>
+    <script type="text/javascript" src="templates/javascript/owl.carousel.js"></script>
+    <script type="text/javascript" src="templates/javascript/jquery.easing.js"></script>
+    
+    <script type="text/javascript" src="templates/javascript/jquery-countTo.js"></script>
+    <script type="text/javascript" src="templates/javascript/jquery.cookie.js"></script>
+    <script type="text/javascript" src="templates/javascript/waypoints.min.js"></script>
+    <script type="text/javascript" src="templates/javascript/main.js"></script>
+
+    <!-- Revolution Slider -->
+    <script type="text/javascript" src="revolution/js/jquery.themepunch.tools.min.js"></script>
+    <script type="text/javascript" src="revolution/js/jquery.themepunch.revolution.min.js"></script>
+    <script type="text/javascript" src="revolution/js/slider_v1.js"></script>
+
+    <!-- SLIDER REVOLUTION 5.0 EXTENSIONS  (Load Extensions only on Local File Systems !  The following part can be removed on Server for On Demand Loading) -->    
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+    <script type="text/javascript" src="templates/revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+
+	</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+
+<div class="container">
+  
+<aside class="col-sm-4" >
+
+<div class="card" >
+
+<article class="card-body">
+	<h4 class="card-title mb-4 mt-1 text-center">Forgot your password</h4>
+  <hr>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'message' %}
+              <div class="alert alert-danger" role="alert">
+            {% else %}
+              <div class="alert alert-{{ category }}" role="alert">
+            {% endif %}
+              {{ message }}
+            </div>
+        {% endfor %}
+      {% endif %}
+  {% endwith %}
+
+</article>
+</div> 
+</aside> 
+
+</div>
+{% endblock %}
