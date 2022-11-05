@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>history</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href="static/styles2.css">
+</head>
+<body>
+    <h1>Command list</h1>
+    <table class="table">
+      <tr>
+        <th class="table__heading">Type</th>
+        <th class="table__heading">Executed At</th>
+        <th class="table__heading">Quantity</th>
+        <th class="table__heading">Time</th>
+      </tr>
+      {% for command in commands %}
+      <tr class="table__row">
+        <td class="table__content">{{command.type}}</td>
+        <td class="table__content">{{command.point}}</td>
+        <td class="table__content">{{command.quantity}}</td>
+        <td class="table__content">{{command.time}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <a href="/getData?f=/app/fus/data/1.txt">1.txt</a></br><a href="/getData?f=/app/fus/data/2.txt">2.txt</a></br><a href="/getData?f=/app/fus/data/3.txt">3.txt</a></br><a href="/getData?f=/app/fus/data/4.txt">4.txt</a></br><a href="/getData?f=/app/fus/data/5.txt">5.txt</a></br>
+    <a href="/" class="previous">&laquo; Home</a>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .previous {
+            margin-top: 30px;
+        }
+    </style>
+</body>
+</html>

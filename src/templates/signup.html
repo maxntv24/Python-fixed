@@ -1,0 +1,52 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+  <aside class="col col-sm-5">
+    <div class="card">
+      <article class="card-body">
+        <h4 class="card-title mb-4 mt-1 text-center">Sign Up</h4>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                  {% if category == 'success' %}
+                    <div class="alert alert-success">
+                      {{ message }}. Go to <a href="{{ url_for('auth.signin') }}">sign in page</a>.
+                    </div>
+                  {% else %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                      {{ message }}
+                    </div>
+                    {% endif %}
+              {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="/signup">
+          <div class="form-group">
+            <input name="username" class="form-control" placeholder="Username" type="username" autofocus="" required>
+          </div> 
+          <div class="form-group">
+            <input name="password" class="form-control" placeholder="Password" type="password" required>
+          </div> 
+          <div class="form-group">
+              <input name="fullname" class="form-control" placeholder="Fullname" type="text" autofocus="" required>  
+          </div>
+          <div class="form-group">
+            <input name="phone" class="form-control" placeholder="Phone" type="text" autofocus="" required>
+        </div>
+          <div class="form-group">
+            <input name="email" class="form-control" placeholder="Email" type="text" autofocus="" required>
+        </div>
+          <div class="form-group">
+            <input name="verifycode" class="form-control" placeholder="Verify code" type="text" autofocus="" required>  
+        </div>
+          <button type="submit" class="btn btn-info btn-block">Sign Up</button>
+        </form>
+      </div>
+
+    </div>
+      </article>
+  </aside>
+{% endblock %}
