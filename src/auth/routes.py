@@ -87,13 +87,18 @@ def signup():
         cur = conn.cursor()
 
         try:
-            cur.execute('SELECT id FROM verifycode WHERE code = $param_1${}$param_1$;'.format(verifycode))
+            #Fix Blind SQL Injection
+            cur.execute('PREPARE verifycode(varchar(32)) AS SELECT id FROM verifycode '
+                         'WHERE code = $1 ')
+            cur.execute('EXECUTE verifycode($param_1${}$param_1$);'.format(verifycode))
             existing_code = cur.fetchone()
             if not existing_code:
                 flash('Invalid verify code.', 'danger')
                 return redirect(url_for('auth.signup'))
-
-            cur.execute('SELECT username FROM users WHERE username = $param_1${}$param_1$;'.format(username))
+            #Fix Blind SQL Injection
+            cur.execute('PREPARE username(varchar(20)) AS SELECT username FROM users '
+                         'WHERE username = $1 ')
+            cur.execute('EXECUTE username($param_1${}$param_1$);'.format(username))
             existing_user = cur.fetchone()
             if existing_user:
                 flash('Username {} already exists.'.format(existing_user[0]), 'warning')
@@ -141,7 +146,8 @@ def forgot():
 		conn =  get_db_connection()
 		cur = conn.cursor()
         # Check mail's exist
-		cur.execute("""SELECT email FROM users WHERE email='%s'""" % email)
+        #Fix Blind SQL Injection
+		cur.execute('SELECT email FROM users WHERE email=%s', [email])
 		result = cur.fetchone() 
 		if result is not None:
 			cur = conn.cursor()
